@@ -224,6 +224,22 @@ try {
             $res1->free();
         }
 
+        /**
+         * Check for services
+         */
+        $query = "SELECT service_id FROM service
+                  WHERE service_register='1'
+                  AND service_id NOT IN (SELECT DISTINCT service_id
+                    FROM centreon_storage.centreon_acl, acl_res_group_relations
+                    WHERE acl_res_id = '" . $row['acl_res_id'] . "'
+                    AND group_id = acl_group_id
+                    AND service_id IS NOT NULL)" ;
+        $res1 = $pearDB->query($query) ;
+        $rowData = $res1->fetchRow() ;
+        if (count($rowData) > 0) {
+            $pearDB->query("UPDATE acl_resources SET changed = '1' WHERE acl_res_id = '" . $row['acl_res_id'] . "'");
+        }
+
         if ($i != 0) {
             $pearDB->query("UPDATE acl_resources SET changed = '1' WHERE acl_res_id = '" . $row['acl_res_id'] . "'");
         }
