@@ -501,7 +501,7 @@ class CentreonLDAP
              * we get list of members by group
              */
             $filter = preg_replace('/%s/', $this->getCnFromDn($groupdn), $this->groupSearchInfo['filter']);
-            $result = @ldap_search($this->ds, $this->userSearchInfo['base_search'], $filter);
+            $result = @ldap_search($this->ds, $this->groupSearchInfo['base_search'], $filter);
 
             if (false === $result) {
                 restore_error_handler();
